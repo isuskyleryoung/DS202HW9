@@ -1,0 +1,61 @@
+---
+title: "DS202HW9"
+output:
+  html_document: default
+  word_document: default
+date: "2023-04-13"
+authors: Skyler Young, Zach Willens
+---
+
+```{r}
+library(dplyr)
+df <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv", stringsAsFactors = FALSE)
+View(df)
+```
+
+# Zach Willens
+#### There’s a 66.67 percent chance that a member of the Avengers returned from their death, but with the second death the fivethirtyeight statements become true with it being 50.
+```{r}
+# Chances to return after first death
+y_count <- table(df$Return1)["YES"]
+n_count <- table(df$Return1)["NO"]
+first_death_return = y_count / (y_count + n_count)
+first_death_return
+
+# Chances to return after second death
+y_count <- table(df$Return2)["YES"]
+n_count <- table(df$Return2)["NO"]
+second_death_return = y_count / (y_count + n_count)
+second_death_return
+```
+
+```{r}
+# total number of times avengers have returned
+avengers_returned <-sum(df$Return1 == "YES") + 
+                   sum(df$Return2 == "YES") +
+                   sum(df$Return3 == "YES") +
+                   sum(df$Return4 == "YES") +
+                   sum(df$Return5 == "YES")
+```
+
+```{r}
+df <- df %>%
+  mutate(time = rowSums(across(starts_with("Death"), ~ ifelse(.x == "YES", 1, 0))),
+         death = ifelse(time > 0, "YES", "No")) %>%
+  select(-c(Death1, Death2, Death3, Death4, Death5, Return1, Return2, Return3, Return4, Return5))
+
+View(df)
+```
+
+
+
+# Skyler Young
+#### There was 89 total deaths for the Avengers and on 57 occasions the individual made a comeback from the afterlife.
+```{r}
+# total amount of avenger deaths
+time_sum <- sum(df$time)
+
+time_sum
+avengers_returned
+```
+
